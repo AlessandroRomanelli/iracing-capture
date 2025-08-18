@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const screenshot = require('screenshot-desktop');
-const ffi = require('ffi-napi');
+// const ffi = require('@2060.io/ffi-napi');
 
 // Supported resolutions
 const RESOLUTIONS = {
@@ -15,24 +15,24 @@ const RESOLUTIONS = {
 // Minimal subset of Win32 APIs used to manipulate the iRacing window
 // This mirrors the behaviour of the original tool which resized the
 // simulator window before taking the screenshot.
-const user32 = new ffi.Library('user32', {
-  'FindWindowA': ['long', ['string', 'string']],
-  'SetWindowPos': ['bool', ['long', 'long', 'int', 'int', 'int', 'int', 'uint']],
-  'ShowWindow': ['bool', ['long', 'int']],
-  'SetForegroundWindow': ['bool', ['long']]
-});
+// const user32 = new ffi.Library('user32', {
+//   'FindWindowA': ['long', ['string', 'string']],
+//   'SetWindowPos': ['bool', ['long', 'long', 'int', 'int', 'int', 'int', 'uint']],
+//   'ShowWindow': ['bool', ['long', 'int']],
+//   'SetForegroundWindow': ['bool', ['long']]
+// });
 
 // Moves and resizes the iRacing window to the requested resolution
 function resizeIRacing(width, height) {
-  const handle = user32.FindWindowA(null, 'iRacing.com Simulator');
-  if (handle === 0) {
-    throw new Error('iRacing window not found');
-  }
+  // const handle = user32.FindWindowA(null, 'iRacing.com Simulator');
+  // if (handle === 0) {
+  //   throw new Error('iRacing window not found');
+  // }
   // 0x0040 = SWP_SHOWWINDOW
   const SWP_SHOWWINDOW = 0x0040;
-  user32.SetWindowPos(handle, 0, 0, 0, width, height, SWP_SHOWWINDOW);
-  user32.ShowWindow(handle, 3); // SW_MAXIMIZE
-  user32.SetForegroundWindow(handle);
+  // user32.SetWindowPos(handle, 0, 0, 0, width, height, SWP_SHOWWINDOW);
+  // user32.ShowWindow(handle, 3); // SW_MAXIMIZE
+  // user32.SetForegroundWindow(handle);
   return handle;
 }
 
@@ -62,7 +62,7 @@ function createWindow() {
       contextIsolation: false
     }
   });
-  win.loadFile(path.join(__dirname, '../renderer/index.html'));
+  win.loadFile(path.join(__dirname, './renderer/index.html'));
 }
 
 app.whenReady().then(createWindow);

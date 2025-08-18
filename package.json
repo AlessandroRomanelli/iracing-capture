@@ -5,13 +5,43 @@
   "main": "src/main/main.js",
   "scripts": {
     "start": "electron .",
-    "test": "echo 'No tests' && exit 0"
+    "clean": "rimraf dist",
+    "dist": "electron-builder --win nsis",
+    "rebuild": "electron-rebuild -f",
+    "test": "echo 'No tests' && exit 0",
+    "postinstall": "electron-builder install-app-deps"
   },
   "devDependencies": {
-    "electron": "^26.0.0"
+    "@electron/rebuild": "^4.0.1",
+    "electron": "^26.6.10",
+    "electron-builder": "^26.0.12",
+    "electron-rebuild": "^3.2.9",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
+    "rimraf": "^6.0.1"
+  },
+  "build": {
+    "appId": "com.example.electronboilerplate",
+    "asar": true,
+    "files": [
+      "src/**/*"
+    ],
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "win": {
+      "target": ["nsis"],
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true
+    }
   },
   "dependencies": {
-    "ffi-napi": "^4.0.3",
+    "@2060.io/ffi-napi": "^4.0.9",
     "ref-napi": "^3.0.3",
     "screenshot-desktop": "^1.15.0"
   }
