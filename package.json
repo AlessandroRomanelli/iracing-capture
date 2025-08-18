@@ -41,8 +41,7 @@
     }
   },
   "dependencies": {
-    "@2060.io/ffi-napi": "^4.0.9",
-    "ref-napi": "^3.0.3",
-    "screenshot-desktop": "^1.15.0"
+    "screenshot-desktop": "^1.15.0",
+    "win-control": "^0.3.1"
   }
 }

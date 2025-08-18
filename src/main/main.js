@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const screenshot = require('screenshot-desktop');
-// const ffi = require('@2060.io/ffi-napi');
+const { Window, SWP, HWND } = require('win-control');
 
 // Supported resolutions
 const RESOLUTIONS = {
@@ -12,28 +12,19 @@ const RESOLUTIONS = {
   '8k': { width: 7680, height: 4320 }
 };
 
-// Minimal subset of Win32 APIs used to manipulate the iRacing window
-// This mirrors the behaviour of the original tool which resized the
-// simulator window before taking the screenshot.
-// const user32 = new ffi.Library('user32', {
-//   'FindWindowA': ['long', ['string', 'string']],
-//   'SetWindowPos': ['bool', ['long', 'long', 'int', 'int', 'int', 'int', 'uint']],
-//   'ShowWindow': ['bool', ['long', 'int']],
-//   'SetForegroundWindow': ['bool', ['long']]
-// });
+// Minimal subset of Win32 APIs used to manipulate the iRacing window.
+// The win-control package provides a light wrapper around the necessary
+// user32 functions so we don't need to use ffi-napi directly.
 
 // Moves and resizes the iRacing window to the requested resolution
 function resizeIRacing(width, height) {
-  // const handle = user32.FindWindowA(null, 'iRacing.com Simulator');
-  // if (handle === 0) {
-  //   throw new Error('iRacing window not found');
-  // }
-  // 0x0040 = SWP_SHOWWINDOW
-  const SWP_SHOWWINDOW = 0x0040;
-  // user32.SetWindowPos(handle, 0, 0, 0, width, height, SWP_SHOWWINDOW);
-  // user32.ShowWindow(handle, 3); // SW_MAXIMIZE
-  // user32.SetForegroundWindow(handle);
-  return handle;
+  const win = Window.getByTitle('iRacing.com Simulator');
+  if (!win) {
+    throw new Error('iRacing window not found');
+  }
+  win.setPosition(HWND.TOP, 0, 0, width, height, SWP.SHOWWINDOW);
+  win.setForeground();
+  return win;
 }
 
 async function captureAt(resKey) {
